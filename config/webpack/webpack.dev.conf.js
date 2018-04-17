@@ -51,19 +51,6 @@ let config = merge(baseWebpackConfig, {
         rules: [
             {
                 test: /\.(js|jsx)$/,
-                use: [
-                    'babel-loader',
-                ],
-                include: [
-                    path.resolve(__dirname, "../../app"),
-                    path.resolve(__dirname, "../../entryBuild")
-                ],
-                exclude: [
-                    path.resolve(__dirname, "../../node_modules")
-                ],
-            },
-            {
-                test: /\.(js|jsx)$/,
                 enforce: 'pre',
                 use: [
                     {
@@ -83,6 +70,19 @@ let config = merge(baseWebpackConfig, {
                 ],
                 include: [
                     path.resolve(__dirname, "../../app")
+                ],
+                exclude: [
+                    path.resolve(__dirname, "../../node_modules")
+                ],
+            },
+            {
+                test: /\.(js|jsx)$/,
+                use: [
+                    'babel-loader',
+                ],
+                include: [
+                    path.resolve(__dirname, "../../app"),
+                    path.resolve(__dirname, "../../entryBuild")
                 ],
                 exclude: [
                     path.resolve(__dirname, "../../node_modules")
