@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "devBuild": "yarn run devEntryBuild && yarn run devBuildHtml",
+    "build-d": "yarn run build-d-entry && yarn run build-d-html",
     "start": "webpack-dev-server --devtool eval --progress --colors --profile --config config/webpack/webpack.dev.conf.js",
     "build-p": "SET BABEL_ENV=production && webpack --progress --colors --config config/webpack/webpack.prod.conf.js",
     "deploy": "yarn run deploy-t",
@@ -13,9 +13,9 @@
     "deploy-20r": "yarn run build-p && gulp buildTime zip release-20",
     "deploy-20l": "yarn run build-p && gulp buildTime zip line-20",
     "deploy-p": "yarn run build-p && gulp buildTime zip product",
-    "devBuildHtml": "node config/webpack/webpack.devBuildHtml.conf.js",
-    "devEntryBuild": "node config/entry/entryBuild.js",
-    "runDist": "node config/runDist.js"
+    "build-d-html": "node config/webpack/webpack.devBuildHtml.conf.js",
+    "build-d-entry": "node config/entry/entryBuild.js",
+    "run-dist": "node config/runDist.js"
   },
   "dependencies": {
     "flex.css": "^1.1.7",
