@@ -14,7 +14,13 @@ import ReactDOM from 'react-dom';
 import Index from '../app/component/${data.path}';
 import Header from '../app/component/common/Header';
 import Footer from '../app/component/common/Footer';
-ReactDOM.render([<Header key="Header"/>,<Index key="Index"/>,<Footer key="Footer"/>],document.getElementById('app'));`;
+ReactDOM.render([
+    <Header key="Header"/>,
+    <div className="mainer" key="mainer">
+        <Index key="Index"/>
+    </div>,
+    <Footer key="Footer"/>
+],document.getElementById('app'));`;
 /*生成webpack entry 入口文件*/
 entry.map((data) => {
     fs.writeFile(entryBuildPath + '/' + data.name + '.js', entryContent(data), 'utf8', function (err) {

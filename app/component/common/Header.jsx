@@ -2,13 +2,12 @@ import React from 'react';
 import './common.pcss';
 const Header = () =>
     <div className="top">
-        <div>这是头部</div>
-        <div>
-            <i className="logo"/>
-        </div>
-        <div className="nav">
-            <a href="/index.html">首页</a> <a href="/shop.html">商城</a> <a href="/demo.html">demo</a>
-        </div>
+        <i className="logo"/>这是头部
+        <ul className="nav">
+            <li><a href="/index.html">首页</a></li>
+            <li><a href="/shop.html">商城</a></li>
+            <li><a href="/demo.html">demo</a></li>
+        </ul>
     </div>
 ;
 

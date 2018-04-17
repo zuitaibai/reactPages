@@ -7,7 +7,7 @@ class Index extends React.Component {
 	    let c = b([1,2,3,4]);
 	    let d = c.reduce((a,b)=>a+b);
 		return (
-            <div className="index">{d}{d}{d}
+            <div className="index">{d}{d}
                 这是首页
             </div>
         );

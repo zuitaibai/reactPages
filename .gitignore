@@ -12,3 +12,5 @@ yarn-error.log*
 !.vscode/extensions.json
 .DS_Store
 .cache-loader/
+devBuild
+entryBuild
