@@ -1,48 +1,54 @@
 let webpackFile = require('./webpack/webpack.file.conf');
-var mine = {
-    "css": "text/css", "gif": "image/gif", "html": "text/html", "ico": "image/x-icon", "xml": "text/xml",
-    "jpeg": "image/jpeg", "jpg": "image/jpeg", "js": "text/javascript", "json": "application/json",
-    "pdf": "application/pdf", "png": "image/png", "svg": "image/svg+xml", "swf": "application/x-shockwave-flash",
-    "tiff": "image/tiff", "txt": "text/plain", "wav": "audio/x-wav", "wma": "audio/x-ms-wma", "wmv": "video/x-ms-wmv"
-};
-const
-    http = require('http'), fs = require('fs'), url = require('url'), path = require('path'),
-    hostname = '127.0.0.1', port = 3000;
+const port = 3001;
+const defIndex = 'index.html';
 
-http.createServer(function(req, res) {
-    var pathname = url.parse(req.url).pathname;
-    var realPath = path.join(webpackFile.proDirectory, pathname);
-    var ext = path.extname(realPath);
+const http = require('http'), fs = require('fs'), url = require('url'), path = require('path'), os = require('os'),
+    mine = { 'css': 'text/css', 'gif': 'image/gif', 'html': 'text/html', 'ico': 'image/x-icon', 'xml': 'text/xml', 'jpeg': 'image/jpeg', 'jpg': 'image/jpeg', 'js': 'text/javascript', 'json': 'application/json', 'pdf': 'application/pdf', 'png': 'image/png', 'svg': 'image/svg+xml', 'swf': 'application/x-shockwave-flash', 'tiff': 'image/tiff', 'txt': 'text/plain', 'wav': 'audio/x-wav', 'wma': 'audio/x-ms-wma', 'wmv': 'video/x-ms-wmv'},
+    clientIP = (() => {
+        let nets = os.networkInterfaces();
+        for (let a in nets) {
+            let ifaces = nets[a];
+            for (let o in ifaces) {
+                if (ifaces[o].family == 'IPv4' && !ifaces[o].internal) return ifaces[o].address;
+            }
+        }
+        return '';
+    })();
+http.createServer(function (req, res) {
+    const readHtml = name => {
+        console.log(`++++ request: ${name}`);
+        let status = 200, exist = fs.existsSync(name), data;
+        if(exist) data = fs.readFileSync(name, 'utf-8');
+        else  data = `file:${name} not exist!`, status = 404;
+        res.writeHead(status, {'Content-Type': 'text/html'});
+        res.end(data);
+        console.log(` ...done`);
+    };
+    const readBinary = name =>{
+        console.log(`++++ request: ${name}`);
+        let exist = fs.existsSync(name);
+        if(exist){
+            res.writeHead(200, {'Content-Type': mine[ext] || 'text/plain'});
+            res.end(fs.readFileSync(name, 'binary'), 'binary');
+        }else{
+            res.writeHead(404, {'Content-Type': 'text/html'});
+            res.end(`file:${name} not exist!`);
+        }
+        console.log(` ...done`);
+    };
+    let pathname = url.parse(req.url).pathname, realPath = path.join(webpackFile.proDirectory, pathname), ext = path.extname(realPath);
     ext = ext ? ext.slice(1) : 'unknown';
-    fs.exists(realPath, function (exists) {
-        if(!exists){
-            res.writeHead(404, { 'Content-Type': 'text/plain'});
-            res.write('no data');
-            return res.end();
-        }
-        if(ext=='html'){
-            fs.readFile(realPath,'utf-8',function  (err,data) {
-                if (err) throw err.toString();
-                else {
-                    res.writeHead(200, {"Content-Type": "text/html"});
-                    res.write(data);
-                    res.end();
-                }
-            });
-        } else{
-            fs.readFile(realPath, "binary", function (err, file) {
-                if (err) {
-                    res.writeHead(500, { 'Content-Type': 'text/plain'});
-                    res.end(err);
-                } else {
-                    let contentType = mine[ext] || "text/plain";
-                    res.writeHead(200, { 'Content-Type': contentType});
-                    res.write(file, "binary");
-                    res.end();
-                }
-            });
-        }
-    });
-}).listen(port, hostname, function() {
-    console.log('Server running at http://%s:%s', hostname, port);
+    if(pathname==='/') readHtml(path.join(webpackFile.proDirectory, defIndex));
+    else if(ext === 'html') readHtml(realPath);
+    else if(ext in mine) readBinary(realPath);
+    else{
+        console.log(`++++ request: / => ${realPath}`);
+        res.writeHead(404, {'Content-Type': 'text/html'});
+        res.write('no data');
+        console.log(` ...done`);
+        res.end();
+    }
+
+}).listen(port, '0.0.0.0', function () {
+    console.log('===== Server running: localhost => http://%s:%s =============================================', clientIP || 'localhost', port);
 });
